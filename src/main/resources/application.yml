@@ -35,3 +35,6 @@ spring:
     audience: ${AUDIENCE}
 server:
   port: 50004
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor: TRACE

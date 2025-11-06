@@ -1,14 +1,13 @@
 package com.example.demo.service;
 
 import io.modelcontextprotocol.client.McpSyncClient;
-import io.modelcontextprotocol.spec.McpSchema;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -22,15 +21,17 @@ public class ChatService {
 
     private final ChatClient chatClient;
     private final SyncMcpToolCallbackProvider mcpToolCallbacks;
+    private final SimpleLoggerAdvisor simpleLoggerAdvisor;
 
 
     @Value("classpath:/templates/prompt.st")
     private Resource template;
 
     public ChatService(ChatClient.Builder chatClientBuilder,
-                       List<McpSyncClient> clients) {
+                       List<McpSyncClient> clients, SimpleLoggerAdvisor simpleLoggerAdvisor) {
         this.chatClient = chatClientBuilder.build();
         this.mcpToolCallbacks = SyncMcpToolCallbackProvider.builder().mcpClients(clients).build();
+        this.simpleLoggerAdvisor = simpleLoggerAdvisor;
     }
 
     public String getChatResponse(String question){
@@ -39,6 +40,7 @@ public class ChatService {
          ChatResponse response=chatClient
                  .prompt(new Prompt(userMessage))
                  .toolCallbacks(mcpToolCallbacks)
+                 .advisors(simpleLoggerAdvisor)
                  .call()
                  .chatResponse();
 

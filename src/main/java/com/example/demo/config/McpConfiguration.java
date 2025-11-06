@@ -3,6 +3,7 @@ package com.example.demo.config;
 import io.modelcontextprotocol.client.transport.customizer.McpSyncHttpClientRequestCustomizer;
 import org.springaicommunity.mcp.security.client.sync.AuthenticationMcpTransportContextProvider;
 import org.springaicommunity.mcp.security.client.sync.oauth2.http.client.OAuth2ClientCredentialsSyncHttpRequestCustomizer;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.mcp.customizer.McpSyncClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -83,5 +84,10 @@ class McpConfiguration {
         return (name, syncSpec) -> syncSpec.transportContextProvider(
                 new AuthenticationMcpTransportContextProvider()
         );
+    }
+
+    @Bean
+    public SimpleLoggerAdvisor simpleLoggerAdvisor(){
+        return new SimpleLoggerAdvisor();
     }
 }
